@@ -3,6 +3,7 @@ $videoURL=''
 $defultLocation='D:/Files/Youtube/%(title)s/%(title)s.%(ext)s'
 $restrict_filenames = '--restrict-filenames'
 $sub_fromat = 'srt'
+$download_thread = 8
 while ($true) {
     if ($videoURL -eq ''){
         # 提示用户输入视频 URL
@@ -31,21 +32,21 @@ while ($true) {
     
     if ($choice -eq '0') {
         # 默认配置
-        yt-dlp -N 8 -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --write-thumbnail --write-description  --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
+        yt-dlp -N $download_thread -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --write-thumbnail --write-description  --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
         Write-Host "任务完成"
     } elseif ($choice -eq '1') {
         # 提示用户选择视频质量
         $formatChoice = Read-Host "请选择视频质量:`n1. 默认配置（最高画质+缩略图+视频描述）`n2. 最高质量`n3. 指定质量"
         if ($formatChoice -eq '1') {
-            yt-dlp -N 8 -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --write-thumbnail --write-description  --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
+            yt-dlp -N $download_thread -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --write-thumbnail --write-description  --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
         } elseif ($formatChoice -eq '2') {
-            yt-dlp -N 8 -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
+            yt-dlp -N $download_thread -f 'bv[ext=mp4]+ba[ext=m4a]' $videoURL --embed-metadata --merge-output-format mp4 -o $videoSaveLocation $restrict_filenames
         } elseif ($formatChoice -eq '3') {
             # 列出视频的可下载内容
             Write-Host "以下是视频的可下载内容："
             yt-dlp -F $videoURL
             $itemNum = Read-Host "请输入所需的视频内容序号,如 76"
-            yt-dlp -N 8 -f $itemNum $videoURL --write-thumbnail --embed-metadata -o $videoSaveLocation $restrict_filenames
+            yt-dlp -N $download_thread -f $itemNum $videoURL --write-thumbnail --embed-metadata -o $videoSaveLocation $restrict_filenames
         }
     } elseif ($choice -eq '2') {
         $subLangChoice = Read-Host "请选择字幕语言:`n1. 中文`n2. 英文`n3. 其他"
